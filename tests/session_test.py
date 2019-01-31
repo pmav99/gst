@@ -37,15 +37,28 @@ class TestGrass(object):
 
 
 class TestSession(object):
-    def test_we_can_import_grass(self, grass, tloc):
-        with gst.session.Session(tloc, grass=grass):
-            import grass
-            import grass.script
-
-    def test_environment_remains_unmodified(self, tloc, grass):
+    def test_environment_is_teared_down_cleanly(self, tloc, grass):
         orig_env = os.environ.copy()
         orig_sys_path = sys.path.copy()
         with gst.session.Session(tloc, grass=grass):
             pass
         assert orig_sys_path == sys.path.copy()
         assert orig_env == os.environ.copy()
+
+    def test_we_can_import_grass(self, grass, tloc):
+        with gst.session.Session(tloc, grass=grass):
+            import grass
+            import grass.script
+
+    @pytest.mark.parametrize(
+        "env", ["GISRC", "GIS_LOCK", "GISBASE", "GRASS_PYTHON", "GRASS_ADDON_BASE"]
+    )
+    def test_grass_env_variables_are_being_setup_and_teared_down(
+        self, tloc, grass, env
+    ):
+        print(grass)
+        print(type(grass))
+        assert not os.environ.get(env)
+        with gst.session.Session(tloc, grass=grass):
+            assert os.environ.get(env)
+        assert not os.environ.get(env)

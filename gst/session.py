@@ -100,20 +100,26 @@ class Session(object):
         self._orig_sys_path = sys.path.copy()
 
         # Setup GRASS environment
-        # The bulk of the work, will be done by `grass.script.setup()`
+        # The bulk of the work, will be done by `grass.script.setup.init()`
+        # Although, at the moment, we can't import that function
+        # unless we set GISBASE manually.
+        # So, until that is resolved, let's set it
+        os.environ["GISBASE"] = self.grass.gisbase.as_posix()
+
         # In order to import `grass.script.setup` though, we frst need
         # to add `python_lib` to `sys.path`.
         sys.path.append(self.grass.python_lib.as_posix())
-        from grass.setup import init
 
-        # OK the imports do work, so we are ready to
-        os.environ["GISBASE"] = self.grass.gisbase.as_posix()
+        # OK the imports do work, so we are ready to initialize the GRASS session
+        from grass.script.setup import init
+
         init(
             gisbase=self.grass.gisbase.as_posix(),
             dbase=self.gisdbase.as_posix(),
             location=self.location.name,
             mapset=self.mapset.name,
         )
+
         # Not sure why, but the `bin` directory of the addons is not being added to
         # $PATH by `gsetup()`, so let's make sure it is there
         os.environ["PATH"] += os.pathsep + os.path.join(
@@ -125,7 +131,7 @@ class Session(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         logger.debug(f"Starting to tear down GRASS context: {self.location}")
-        from grass.setup import finish
+        from grass.script.setup import finish
 
         finish()
         # Restore the original env
