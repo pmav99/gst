@@ -111,7 +111,7 @@ class Session(object):
         sys.path.append(self.grass.python_lib.as_posix())
 
         # OK the imports do work, so we are ready to initialize the GRASS session
-        from grass.script.setup import init
+        from grass.script.setup import init  # type: ignore
 
         init(
             gisbase=self.grass.gisbase.as_posix(),
@@ -127,11 +127,10 @@ class Session(object):
         )
         logger.debug(f"Finished setting up GRASS context: {self.location}")
         logger.info(f"Entering GRASS session: {self.location}")
-        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         logger.debug(f"Starting to tear down GRASS context: {self.location}")
-        from grass.script.setup import finish
+        from grass.script.setup import finish  # type: ignore
 
         finish()
         # Restore the original env
