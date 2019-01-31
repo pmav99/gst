@@ -1,13 +1,9 @@
 import os
 import pathlib
 
-import pytest
-from unittest import mock
-from unittest.mock import patch
+import pytest  # type: ignore
 
 from gst.utils import resolve_grass_executable
-
-from unittest.mock import MagicMock
 
 
 class TestResolveGrassExecutable(object):

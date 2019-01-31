@@ -1,10 +1,11 @@
 import logging
 import os.path
 import pathlib
-import shutil
 import sys
-
-from typing import Union, Any, Optional, List, Dict, cast
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Union
 
 import delegator  # type: ignore
 
