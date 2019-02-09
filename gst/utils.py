@@ -2,14 +2,14 @@ import logging
 import os
 import pathlib
 import shutil
-
-from typing import Union, Optional
+from typing import Optional
+from typing import Union
 
 
 logger = logging.getLogger(__name__)
 
 
-def _resolve_path(executable: Union[str, pathlib.Path]) -> pathlib.Path:
+def resolve_path(executable: Union[str, pathlib.Path]) -> pathlib.Path:
     resolved = shutil.which(executable)
     if resolved is None:
         raise ValueError(
@@ -19,7 +19,7 @@ def _resolve_path(executable: Union[str, pathlib.Path]) -> pathlib.Path:
     return path
 
 
-def _resolve_gst_grass_executable() -> pathlib.Path:
+def resolve_gst_grass_executable() -> pathlib.Path:
     resolved = os.environ.get("GST_GRASS_EXECUTABLE")
     print(resolved)
     if resolved is None:
@@ -68,7 +68,10 @@ def resolve_grass_executable(
     # If the user provides an explicit `executable` value, use it.
     # If not, try to use GST_GRASS_EXECUTABLE
     if executable:
-        path = _resolve_path(executable)
+        path = resolve_path(executable)
     else:
-        path = _resolve_gst_grass_executable()
+        path = resolve_gst_grass_executable()
     return path
+
+
+__all__ = ["resolve_grass_executable"]
