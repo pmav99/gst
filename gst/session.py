@@ -52,6 +52,7 @@ class Grass(object):
         self.executable = resolve_grass_executable(executable)
         self.gisbase = self.get_gisbase()
         self.python_lib = self.gisbase / "etc/python"
+        logger.debug(f"GRASS: {self.executable}")
 
     def get_gisbase(self) -> pathlib.Path:
         """ Return the path to the GRASS installation directory. """
@@ -108,7 +109,7 @@ class Session(object):
         # So, until that is resolved, let's set it
         os.environ["GISBASE"] = self.grass.gisbase.as_posix()
 
-        # In order to import `grass.script.setup` though, we frst need
+        # In order to import `grass.script.setup` though, we first need
         # to add `python_lib` to `sys.path`.
         sys.path.append(self.grass.python_lib.as_posix())
 

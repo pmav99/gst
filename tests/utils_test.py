@@ -22,7 +22,7 @@ class TestResolveGrassExecutable(object):
     def test_path_is_specified_but_not_an_executable_raises(self, path):
         with pytest.raises(ValueError) as exc:
             resolve_grass_executable(path)
-        assert path in str(exc)
+        assert f"not: {path}" in str(exc)
 
     @pytest.mark.parametrize("path", ["/bin/ls", pathlib.Path("/bin/ls")])
     def test_path_is_specified_as_an_executable_OK(self, path):
