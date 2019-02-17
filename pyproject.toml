@@ -7,6 +7,7 @@ authors = ["Panos Mavrogiorgos <pmav99@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.7"
 "delegator.py" = "^0.1.1"
+decorator = "^4.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.0"
