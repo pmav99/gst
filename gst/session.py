@@ -9,6 +9,8 @@ from typing import Union
 
 import delegator  # type: ignore
 
+from .system_restore import restore_system_state
+from .system_restore import save_system_state
 from .utils import resolve_grass_executable
 
 logger = logging.getLogger(__name__)
@@ -97,8 +99,7 @@ class Session(object):
     def __enter__(self) -> None:
         logger.debug(f"Starting to setup GRASS context: {self.location}")
         # store original environment in order to restore them when we exit.
-        self._orig_env = os.environ.copy()
-        self._orig_sys_path = sys.path.copy()
+        self._original_state = save_system_state()
 
         # Setup GRASS environment
         # The bulk of the work, will be done by `grass.script.setup.init()`
@@ -134,9 +135,6 @@ class Session(object):
         from grass.script.setup import finish  # type: ignore
 
         finish()
-        # Restore the original env
-        os.environ.clear()
-        os.environ.update(self._orig_env)
-        sys.path = self._orig_sys_path
+        restore_system_state(self._original_state)
         logger.debug(f"Finished tearing down GRASS context: {self.location}")
         logger.info(f"Exiting GRASS session: {self.location}")
