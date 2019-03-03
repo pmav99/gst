@@ -21,7 +21,6 @@ def resolve_path(executable: Union[str, pathlib.Path]) -> pathlib.Path:
 
 def resolve_gst_grass_executable() -> pathlib.Path:
     resolved = os.environ.get("GST_GRASS_EXECUTABLE")
-    print(resolved)
     if resolved is None:
         raise ValueError(
             f"Please set '$GST_GRASS_EXECUTABLE' to the path of the GRASS executable"

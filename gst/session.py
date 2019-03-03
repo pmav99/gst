@@ -53,11 +53,11 @@ class Grass(object):
 
     def __init__(self, executable: Optional[Union[str, pathlib.Path]] = None) -> None:
         self.executable = resolve_grass_executable(executable)
-        self.gisbase = self.get_gisbase()
+        self.gisbase = self._get_gisbase()
         self.python_lib = self.gisbase / "etc/python"
         logger.debug(f"GRASS: {self.executable}")
 
-    def get_gisbase(self) -> pathlib.Path:
+    def _get_gisbase(self) -> pathlib.Path:
         """ Return the path to the GRASS installation directory. """
         p = delegator.run(f"{self.executable} --config path")
         return pathlib.Path(p.out.strip()).resolve()
@@ -70,15 +70,10 @@ class Session(decorator.ContextManager):
 
     """
 
-    grass: Grass
-    gisdb: pathlib.Path
     location: pathlib.Path
     mapset: pathlib.Path
-
-    _orig_env: Dict[str, str]
-    _orig_path: str
-    _orig_sys_path: List[str]
-    _orig_python_path: str
+    grass: Grass
+    gisdbase: pathlib.Path
     _is_active: bool
 
     def __init__(
