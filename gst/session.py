@@ -126,11 +126,15 @@ class Session(decorator.ContextManager):
             mapset=self.mapset.name,
         )
 
-        # Not sure why, but the `bin` directory of the addons is not being added to
-        # $PATH by `gsetup()`, so let's make sure it is there
-        os.environ["PATH"] += os.pathsep + os.path.join(
-            os.environ["GRASS_ADDON_BASE"], "bin"
-        )
+        # Not sure why, but the directories of the GRASS addons are not being added to
+        # $PATH by `gsetup()`, so let's make sure they are added.
+        addon_paths = [
+            # os.path.join(os.environ["GRASS_ADDON_BASE"], "bin"),
+            os.path.join(os.environ["GRASS_ADDON_BASE"], "etc"),
+            os.path.join(os.environ["GRASS_ADDON_BASE"], "scripts"),
+        ]
+        os.environ["PATH"] += os.pathsep.join(addon_paths)
+
         # mark the session as active
         self._is_active = True
 
