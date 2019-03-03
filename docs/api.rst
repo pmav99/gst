@@ -1,6 +1,12 @@
 API
 ===
 
+`gst.grass_bin`
+---------------
+
+.. automodule:: gst.grass_bin
+   :members:
+
 `gst.session`
 -------------
 
