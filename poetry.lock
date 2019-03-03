@@ -97,6 +97,14 @@ webencodings = "*"
 
 [[package]]
 category = "dev"
+description = "Version-bump your software with a single command!"
+name = "bump2version"
+optional = false
+python-versions = "*"
+version = "0.5.10"
+
+[[package]]
+category = "dev"
 description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
 optional = false
@@ -833,7 +841,7 @@ python-versions = ">=2.7"
 version = "0.3.3"
 
 [metadata]
-content-hash = "05475ef9adcacad57200742edc202eea5e337144ea98427f4c59c25c231b84b4"
+content-hash = "24c9fb227eea5a70d66040751e0eca203592b9eac9ade06d1ad2efb8b627f76d"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -847,6 +855,7 @@ babel = ["6778d85147d5d85345c14a26aada5e478ab04e39b078b0745ee6870c2b5cf669", "8c
 backcall = ["38ecd85be2c1e78f77fd91700c76e14667dc21e2713b63876c0eb901196e01e4", "bbbf4b1e5cd2bdb08f915895b51081c041bac22394fdfcfdfbe9f14b77c08bf2"]
 black = ["817243426042db1d36617910df579a54f1afd659adb96fc5032fcf4b36209739", "e030a9a28f542debc08acceb273f228ac422798e5215ba2a791a6ddeaaca22a5"]
 bleach = ["213336e49e102af26d9cde77dd2d0397afabc5a6bf2fed985dc35b5d1e285a16", "3fdf7f77adcf649c9911387df51254b813185e32b2c6619f690b593a617e19fa"]
+bump2version = ["185abfd0d8321ec5059424d8b670aa82f7385948ff7ddd986981b4ed04dc819a"]
 certifi = ["47f9c83ef4c0c621eaef743f133f09fa8a74a9b75f037e8624f83bd1b6626cb7", "993f830721089fef441cdfeb4b2c8c9df86f0c63239f06bd025a76a7daddb033"]
 cfgv = ["39d9055c47e3932908fe25abd5807e21dc002630db01c7a5f05738d027e2b706", "41d22dd864c474f919ecb88900000d2410d640315f75bdb79b3abf9347089641"]
 chardet = ["84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae", "fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"]
