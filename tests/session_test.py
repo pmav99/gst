@@ -84,3 +84,8 @@ def test_decorator(tloc, grass, env):
     inside_grass_session()
     assert env not in os.environ
     assert not shutil.which("r.report")
+    with grass_session:
+        assert env in os.environ
+        assert shutil.which("r.report")
+    assert env not in os.environ
+    assert not shutil.which("r.report")
