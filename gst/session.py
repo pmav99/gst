@@ -68,6 +68,33 @@ class Session(decorator.ContextManager):
     A context manager that allows you to work with GRASS GIS without explicitly
     starting it.
 
+    Attributes
+    ----------
+    location:
+        The path to the GRASS Location
+    mapset:
+        The path to the GRASS Mapset
+    grass:
+        The path to the GRASS executable
+    gisdbase:
+    is_active:
+        A boolean property indicating whether the session is active or not
+
+    Parameters
+    ----------
+
+    location:
+        The path to the GRASS Location
+    mapset:
+        The path to the GRASS Mapset
+    grass:
+        The GRASS executable.
+
+    Raises
+    ------
+    ValueError:
+        If the GRASS executable cannot be found.
+
     """
 
     location: pathlib.Path
