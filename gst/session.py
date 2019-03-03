@@ -16,6 +16,8 @@ from .utils import resolve_grass_executable
 
 logger = logging.getLogger(__name__)
 
+__all__ = ["Grass", "Session"]
+
 
 class Grass(object):
     """
