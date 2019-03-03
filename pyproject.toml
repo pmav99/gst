@@ -5,7 +5,7 @@ description = ""
 authors = ["Panos Mavrogiorgos <pmav99@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6"
 "delegator.py" = "^0.1.1"
 decorator = "^4.3"
 
