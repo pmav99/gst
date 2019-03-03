@@ -1,5 +1,6 @@
 import os
 import pathlib
+import shutil
 import sys
 
 import pytest  # type: ignore
@@ -62,3 +63,24 @@ class TestSession(object):
         with gst.session.Session(tloc, grass=grass):
             assert os.environ.get(env) is not None
         assert os.environ.get(env) is None
+
+
+@pytest.mark.parametrize(
+    "env", ["GISRC", "GIS_LOCK", "GISBASE", "GRASS_PYTHON", "GRASS_ADDON_BASE"]
+)
+def test_decorator(tloc, grass, env):
+    # Create the decorator. We need a different decorator per Location!
+    grass_session = gst.session.Session(tloc, grass=grass)
+
+    # Define the function that will run inside the GRASS session
+    @grass_session
+    def inside_grass_session():
+        assert env in os.environ
+        assert shutil.which("r.report")
+
+    # run the tests
+    assert env not in os.environ
+    assert not shutil.which("r.report")
+    inside_grass_session()
+    assert env not in os.environ
+    assert not shutil.which("r.report")

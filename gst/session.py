@@ -7,6 +7,7 @@ from typing import List
 from typing import Optional
 from typing import Union
 
+import decorator  # type: ignore
 import delegator  # type: ignore
 
 from .system_restore import restore_system_state
@@ -60,7 +61,7 @@ class Grass(object):
         return pathlib.Path(p.out.strip()).resolve()
 
 
-class Session(object):
+class Session(decorator.ContextManager):
     """
     A context manager that allows you to work with GRASS GIS without explicitly
     starting it.
