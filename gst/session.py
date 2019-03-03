@@ -79,6 +79,7 @@ class Session(decorator.ContextManager):
     _orig_path: str
     _orig_sys_path: List[str]
     _orig_python_path: str
+    _is_active: bool
 
     def __init__(
         self,
@@ -99,6 +100,10 @@ class Session(decorator.ContextManager):
         if not self.mapset.is_dir():
             msg = f"The Mapset exists, but is not a directory. Please check it out: {self.mapset}"
             raise ValueError(msg)
+
+    @property
+    def is_active(self):
+        return self._is_active
 
     def __enter__(self) -> None:
         logger.debug(f"Starting to setup GRASS context: {self.location}")
@@ -131,11 +136,18 @@ class Session(decorator.ContextManager):
         os.environ["PATH"] += os.pathsep + os.path.join(
             os.environ["GRASS_ADDON_BASE"], "bin"
         )
+        # mark the session as active
+        self._is_active = True
+
         logger.debug(f"Finished setting up GRASS context: {self.location}")
         logger.info(f"Entering GRASS session: {self.location}")
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         logger.debug(f"Starting to tear down GRASS context: {self.location}")
+
+        # mark the session as active
+        self._is_active = False
+
         from grass.script.setup import finish  # type: ignore
 
         finish()
