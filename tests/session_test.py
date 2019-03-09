@@ -7,12 +7,6 @@ import pytest  # type: ignore
 import gst.session
 
 
-class TestGrass(object):
-    @pytest.mark.parametrize("attr", ["executable", "gisbase", "python_lib"])
-    def test_grass_has_parameter(self, grass, attr):
-        assert hasattr(grass, attr)
-
-
 class TestSession(object):
     def test_environment_is_teared_down_cleanly(self, tloc, grass):
         orig_env = os.environ.copy()
