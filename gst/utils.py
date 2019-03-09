@@ -12,7 +12,7 @@ from typing import Union
 logger = logging.getLogger(__name__)
 
 
-def resolve_path(executable: Union[str, pathlib.Path]) -> pathlib.Path:
+def _resolve_path(executable: Union[str, pathlib.Path]) -> pathlib.Path:
     resolved = shutil.which(executable)
     if resolved is None:
         raise ValueError(
@@ -22,7 +22,7 @@ def resolve_path(executable: Union[str, pathlib.Path]) -> pathlib.Path:
     return path
 
 
-def resolve_gst_grass_executable() -> pathlib.Path:
+def _resolve_gst_grass_executable() -> pathlib.Path:
     resolved = os.environ.get("GST_GRASS_EXECUTABLE")
     if resolved is None:
         raise ValueError(
@@ -70,9 +70,9 @@ def resolve_grass_executable(
     # If the user provides an explicit `executable` value, use it.
     # If not, try to use GST_GRASS_EXECUTABLE
     if executable:
-        path = resolve_path(executable)
+        path = _resolve_path(executable)
     else:
-        path = resolve_gst_grass_executable()
+        path = _resolve_gst_grass_executable()
     return path
 
 
