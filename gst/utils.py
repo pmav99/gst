@@ -1,3 +1,6 @@
+"""
+Various utilities for the `gst` package.
+"""
 import logging
 import os
 import pathlib

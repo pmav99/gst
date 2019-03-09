@@ -25,6 +25,7 @@ pytest-mock = "^1.10"
 detect-secrets = "^0.11.4"
 flake8-black = "^0.0.1"
 bump2version = "^0.5.10"
+prospector = "^1.1"
 
 [build-system]
 requires = ["poetry>=0.12"]

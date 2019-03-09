@@ -1,17 +1,10 @@
 import logging
-import os.path
 import pathlib
-import sys
-from typing import Dict
-from typing import List
 from typing import Optional
 from typing import Union
 
-import decorator  # type: ignore
 import delegator  # type: ignore
 
-from .system_restore import restore_system_state
-from .system_restore import save_system_state
 from .utils import resolve_grass_executable
 
 logger = logging.getLogger(__name__)
