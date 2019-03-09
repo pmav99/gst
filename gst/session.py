@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import os.path
 import pathlib
@@ -79,8 +81,8 @@ class Session(decorator.ContextManager):
     def is_active(self):
         return self._is_active
 
-    def __enter__(self) -> None:
-        logger.debug(f"Starting to setup GRASS context: {self.location}")
+    def __enter__(self) -> Session:
+        logger.debug("Starting to setup GRASS context: {self.location}")
         # store original environment in order to restore them when we exit.
         self._original_state = save_system_state()
 
@@ -119,6 +121,7 @@ class Session(decorator.ContextManager):
 
         logger.debug(f"Finished setting up GRASS context: {self.location}")
         logger.info(f"Entering GRASS session: {self.location}")
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         logger.debug(f"Starting to tear down GRASS context: {self.location}")

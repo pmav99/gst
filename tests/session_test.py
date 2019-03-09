@@ -64,6 +64,11 @@ class TestSession(object):
             assert os.environ.get(env) is not None
         assert os.environ.get(env) is None
 
+    def test_session_is_active(self, tloc, grass):
+        with gst.session.Session(tloc, grass=grass) as session:
+            assert session.is_active is True
+        assert session.is_active is False
+
 
 @pytest.mark.parametrize(
     "env", ["GISRC", "GIS_LOCK", "GISBASE", "GRASS_PYTHON", "GRASS_ADDON_BASE"]
