@@ -46,9 +46,13 @@ repos:
     rev: 'v1.3.5'
     hooks:
       - id: 'reorder-python-imports'
-        args: [ '--py3-plus']
+        args: ['--py3-plus']
 
-  - repo: 'git://github.com/luismayta/pre-commit-mypy'
-    rev: '0.1.1'
+  - repo: 'local'
     hooks:
       - id: mypy
+        name: Check mypy static types match
+        entry: mypy gst
+        pass_filenames: false
+        language: system
+        types: [python]
