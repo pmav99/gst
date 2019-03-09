@@ -54,3 +54,9 @@ class Grass(object):
         """ Return the path to the GRASS installation directory. """
         p = delegator.run(f"{self.executable} --config path")
         return pathlib.Path(p.out.strip()).resolve()
+
+    def session(self, location, mapset="PERMANENT"):
+        """ Return a `gst.session.Session` instance """
+        from .session import Session
+
+        return Session(location=location, mapset=mapset, grass=self)
