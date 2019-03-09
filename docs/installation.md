@@ -6,4 +6,4 @@ You can install the latest release with (Not released yet!):
 
 You can install a specific release straight from github with:
 
-    pip install git+https://github.com/pmav99/gst.git@0.2.0
+    pip install git+https://github.com/pmav99/gst.git@0.2.1
