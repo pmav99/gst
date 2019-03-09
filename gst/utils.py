@@ -8,6 +8,8 @@ import shutil
 from typing import Optional
 from typing import Union
 
+import decorator  # type: ignore
+
 
 logger = logging.getLogger(__name__)
 
@@ -76,4 +78,17 @@ def resolve_grass_executable(
     return path
 
 
-__all__ = ["resolve_grass_executable"]
+@decorator.decorator
+def require_grass(func, *args, **kwargs):
+    """
+    Functions decorated with this will raise `ValueError` if they are not called
+    inside a GRASS session
+    """
+    if not os.environ.get("GISBASE"):
+        raise ValueError(
+            f"function <{func.__name__}> needs to be called inside a GRASS session"
+        )
+    return func(*args, **kwargs)
+
+
+__all__ = ["resolve_grass_executable", "require_grass"]

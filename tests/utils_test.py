@@ -3,6 +3,8 @@ import pathlib
 
 import pytest  # type: ignore
 
+import gst.session
+import gst.utils
 from gst.utils import resolve_grass_executable
 
 
@@ -46,3 +48,19 @@ class TestResolveGrassExecutable(object):
         with pytest.raises(ValueError) as exc:
             resolve_grass_executable()
         assert "GST_GRASS_EXECUTABLE" in str(exc)
+
+
+@gst.utils.require_grass
+def decorated_function():
+    return "return value"
+
+
+def test_require_grass_raises_when_called_out_of_session():
+    with pytest.raises(ValueError) as exc:
+        decorated_function()
+    assert "<decorated_function>" in str(exc)
+
+
+def test_require_grass_works_when_called_in_session(tloc):
+    with gst.session.Session(tloc, "PERMANENT"):
+        assert decorated_function() == "return value"
