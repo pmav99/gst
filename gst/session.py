@@ -11,10 +11,11 @@ import decorator  # type: ignore
 from .grass_bin import Grass
 from .system_restore import restore_system_state
 from .system_restore import save_system_state
+from .system_restore import SystemState
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["Session"]
+__all__ = ["Session", "start_grass_session", "finish_grass_session"]
 
 
 class Session(decorator.ContextManager):
@@ -84,37 +85,9 @@ class Session(decorator.ContextManager):
     def __enter__(self) -> Session:
         logger.debug("Starting to setup GRASS context: {self.location}")
         # store original environment in order to restore them when we exit.
-        self._original_state = save_system_state()
-
-        # Setup GRASS environment
-        # The bulk of the work, will be done by `grass.script.setup.init()`
-        # Although, at the moment, we can't import that function
-        # unless we set GISBASE manually.
-        # So, until that is resolved, let's set it
-        os.environ["GISBASE"] = self.grass.gisbase.as_posix()
-
-        # In order to import `grass.script.setup` though, we first need
-        # to add `python_lib` to `sys.path`.
-        sys.path.append(self.grass.python_lib.as_posix())
-
-        # OK the imports do work, so we are ready to initialize the GRASS session
-        from grass.script.setup import init  # type: ignore
-
-        init(
-            gisbase=self.grass.gisbase.as_posix(),
-            dbase=self.gisdbase.as_posix(),
-            location=self.location.name,
-            mapset=self.mapset.name,
+        self._original_state = start_grass_session(
+            self.grass, self.location, self.mapset
         )
-
-        # Not sure why, but the directories of the GRASS addons are not being added to
-        # $PATH by `gsetup()`, so let's make sure they are added.
-        addon_paths = [
-            # os.path.join(os.environ["GRASS_ADDON_BASE"], "bin"),
-            os.path.join(os.environ["GRASS_ADDON_BASE"], "etc"),
-            os.path.join(os.environ["GRASS_ADDON_BASE"], "scripts"),
-        ]
-        os.environ["PATH"] += os.pathsep.join(addon_paths)
 
         # mark the session as active
         self._is_active = True
@@ -125,13 +98,56 @@ class Session(decorator.ContextManager):
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         logger.debug(f"Starting to tear down GRASS context: {self.location}")
-
-        # mark the session as active
+        finish_grass_session(self._original_state)
         self._is_active = False
-
-        from grass.script.setup import finish  # type: ignore
-
-        finish()
-        restore_system_state(self._original_state)
         logger.debug(f"Finished tearing down GRASS context: {self.location}")
         logger.info(f"Exiting GRASS session: {self.location}")
+
+
+def start_grass_session(
+    grass_bin: Grass,
+    location: pathlib.Path,
+    mapset: pathlib.Path = pathlib.Path("PERMANENT"),
+) -> SystemState:
+    """ Start a grass session """
+    # store original environment in order to restore it when we finish the session
+    original_state: SystemState = save_system_state()
+
+    # Setup GRASS environment
+    # The bulk of the work, will be done by `grass.script.setup.init()`
+    # Although, at the moment, we can't import that function
+    # unless we set GISBASE manually.
+    # So, until that is resolved, let's set it
+    os.environ["GISBASE"] = grass_bin.gisbase.as_posix()
+
+    # In order to import `grass.script.setup` though, we first need
+    # to add `python_lib` to `sys.path`.
+    sys.path.append(grass_bin.python_lib.as_posix())
+
+    # OK the imports do work, so we are ready to initialize the GRASS session
+    from grass.script.setup import init  # type: ignore
+
+    init(
+        gisbase=grass_bin.gisbase.as_posix(),
+        dbase=location.parent.as_posix(),
+        location=location.name,
+        mapset=mapset.name,
+    )
+
+    # Not sure why, but the directories of the GRASS addons are not being added to
+    # $PATH by `gsetup()`, so let's make sure they are added.
+    addon_paths = [
+        # os.path.join(os.environ["GRASS_ADDON_BASE"], "bin"),
+        os.path.join(os.environ["GRASS_ADDON_BASE"], "etc"),
+        os.path.join(os.environ["GRASS_ADDON_BASE"], "scripts"),
+    ]
+    os.environ["PATH"] += os.pathsep.join(addon_paths)
+    return original_state
+
+
+def finish_grass_session(original_state: SystemState) -> None:
+    """ Finish a GRASS session """
+    from grass.script.setup import finish  # type: ignore
+
+    finish()
+    restore_system_state(original_state)
