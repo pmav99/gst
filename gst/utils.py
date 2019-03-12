@@ -55,7 +55,7 @@ def resolve_grass_executable(
 
     If a path cannot be resolved, then a `ValueError` will be raised.
 
-    Note: There is no check if the resoved executable is actually a grass one or not.
+    Note: There is no check if the resolved executable is actually a grass one or not.
 
     Parameters
     ----------
