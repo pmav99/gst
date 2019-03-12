@@ -7,6 +7,12 @@ API
 .. automodule:: gst.grass_bin
    :members:
 
+`gst.system_restore`
+--------------------
+
+.. automodule:: gst.system_restore
+   :members:
+
 `gst.session`
 -------------
 
