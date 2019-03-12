@@ -68,15 +68,9 @@ class Session(decorator.ContextManager):
         self.mapset = self.location / mapset
         self.grass = grass if isinstance(grass, Grass) else Grass(grass)
         self.gisdbase = self.location.parent
-        self._make_sanity_check()
-
-    def _make_sanity_check(self) -> None:
-        if not self.mapset.exists():
-            msg = f"The mapset does not exist. Please create it first and try again: {self.mapset}"
-            raise ValueError(msg)
-        if not self.mapset.is_dir():
-            msg = f"The Mapset exists, but is not a directory. Please check it out: {self.mapset}"
-            raise ValueError(msg)
+        # We run the sanity check at the end of __init__ because we need to first
+        # convert mapset to a pathlib.Path instance.
+        _mapset_sanity_check(self.mapset)
 
     @property
     def is_active(self):
@@ -104,12 +98,27 @@ class Session(decorator.ContextManager):
         logger.info(f"Exiting GRASS session: {self.location}")
 
 
+def _mapset_sanity_check(mapset: pathlib.Path) -> None:
+    if not mapset.exists():
+        msg = (
+            f"The mapset does not exist. Please create it first and try again: {mapset}"
+        )
+        raise ValueError(msg)
+    if not mapset.is_dir():
+        msg = (
+            f"The Mapset exists, but is not a directory. Please check it out: {mapset}"
+        )
+        raise ValueError(msg)
+
+
 def start_grass_session(
     grass_bin: Grass,
     location: pathlib.Path,
     mapset: pathlib.Path = pathlib.Path("PERMANENT"),
 ) -> SystemState:
     """ Start a grass session """
+
+    _mapset_sanity_check(location / mapset)
     # store original environment in order to restore it when we finish the session
     original_state: SystemState = save_system_state()
 
