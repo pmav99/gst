@@ -76,6 +76,9 @@ class Session(decorator.ContextManager):
     def is_active(self):
         return self._is_active
 
+    def __repr__(self):
+        return f"<GRASS Session: {self.mapset.as_posix()}>"
+
     def __enter__(self) -> Session:
         logger.debug("Starting to setup GRASS context: {self.location}")
         # store original environment in order to restore them when we exit.

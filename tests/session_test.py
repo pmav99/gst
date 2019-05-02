@@ -65,3 +65,9 @@ def test_decorator(tloc, grass, env):
         assert shutil.which("r.report")
     assert env not in os.environ
     assert not shutil.which("r.report")
+
+
+def test_repr(tloc, grass):
+    grass_session = gst.session.Session(tloc, grass=grass)
+    assert tloc.as_posix() in str(grass_session)
+    assert False
