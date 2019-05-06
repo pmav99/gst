@@ -56,6 +56,8 @@ _RETURN_VALUE = "return value"
 
 @gst.utils.require_grass
 def decorated_function():
+    import grass.pygrass.gis
+
     return _RETURN_VALUE
 
 
