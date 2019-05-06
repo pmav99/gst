@@ -5,6 +5,7 @@ import pytest  # type: ignore
 
 import gst.session
 import gst.utils
+from . import param_test_locations
 from gst.utils import resolve_grass_executable
 
 
@@ -50,9 +51,12 @@ class TestResolveGrassExecutable(object):
         assert "GST_GRASS_EXECUTABLE" in str(exc)
 
 
+_RETURN_VALUE = "return value"
+
+
 @gst.utils.require_grass
 def decorated_function():
-    return "return value"
+    return _RETURN_VALUE
 
 
 def test_require_grass_raises_when_called_out_of_session():
@@ -61,6 +65,7 @@ def test_require_grass_raises_when_called_out_of_session():
     assert "<decorated_function>" in str(exc)
 
 
-def test_require_grass_works_when_called_in_session(tloc):
-    with gst.session.Session(tloc, "PERMANENT"):
-        assert decorated_function() == "return value"
+@param_test_locations
+def test_require_grass_works_when_called_in_session(grass_bin, loc):
+    with grass_bin.session(loc):
+        assert decorated_function() == _RETURN_VALUE

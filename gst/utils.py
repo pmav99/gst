@@ -84,7 +84,7 @@ def require_grass(func, *args, **kwargs):
     Functions decorated with this will raise `ValueError` if they are not called
     inside a GRASS session
     """
-    if not os.environ.get("GISBASE"):
+    if not os.environ.get("GIS_LOCK"):
         raise ValueError(
             f"function <{func.__name__}> needs to be called inside a GRASS session"
         )

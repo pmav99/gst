@@ -8,4 +8,4 @@ from .grass_bin import *
 from .session import *
 from .utils import *
 
-__all__ = session.__all__ + grass_bin.__all__ + utils.__all__
+__all__: list = session.__all__ + grass_bin.__all__ + utils.__all__

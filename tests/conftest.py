@@ -1,27 +1,39 @@
 import pathlib
+import shutil
 
 import pytest  # type: ignore
 
 import gst.session
-
-
-@pytest.fixture(scope="module")
-def grass() -> gst.session.Grass:
-    g = gst.session.Grass()
-    return g
+from . import _normalize_mapsets
+from . import TESTS_GISDBASE
 
 
 @pytest.fixture
-def data_fixtures():
-    module = pathlib.Path(__file__)
-    data_fixtures = module.parent / "data_fixtures"
-    return data_fixtures
+def grass_bin():
+    return gst.Grass()
 
 
 @pytest.fixture
-def tloc(request, data_fixtures):
+def gsession(tmpdir, grass_bin):
     """
-    Returns a Test Location from the `data_fixtures` directory.
-    Must be used with `pytest.mark.parametrize(indirect=True)`.
+    A pytest fixture that creates a `gst.Session` object.
+
+    The location and the mapset must exist.
     """
-    return data_fixtures / "TestBase/Test4326"
+
+    def inner(location, mapsets="PERMANENT"):
+        test_location = tmpdir / "gisdbase" / location
+        for mapset in _normalize_mapsets(mapsets):
+            test_mapset = test_location / mapset
+            shutil.copytree(TESTS_GISDBASE / location / mapset, test_mapset)
+        session = grass_bin.session(test_location)
+        return session
+
+    return inner
+
+
+@pytest.fixture
+def epsg4326(gsession):
+    """ Return a GRASS session using EPSG4326 Location """
+    session = gsession("epsg4326", "PERMANENT")
+    return session

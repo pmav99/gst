@@ -64,10 +64,11 @@ class Session(decorator.ContextManager):
         mapset: Union[str, pathlib.Path] = "PERMANENT",
         grass: Union[str, pathlib.Path, Grass] = None,
     ) -> None:
-        self.location = pathlib.Path(location)
+        self.location = pathlib.Path(location).resolve()
         self.mapset = self.location / mapset
         self.grass = grass if isinstance(grass, Grass) else Grass(grass)
         self.gisdbase = self.location.parent
+        self._is_active = False
         # We run the sanity check at the end of __init__ because we need to first
         # convert mapset to a pathlib.Path instance.
         _mapset_sanity_check(self.mapset)

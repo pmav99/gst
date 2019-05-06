@@ -4,11 +4,13 @@ import pathlib
 import pytest  # type: ignore
 
 import gst
+from . import param_test_locations
+from . import TESTS_GISDBASE
 
 
 @pytest.mark.parametrize("attr", ["executable", "gisbase", "python_lib"])
-def test_grass_has_attribute(grass, attr):
-    assert hasattr(grass, attr)
+def test_grass_has_attribute(grass_bin, attr):
+    assert hasattr(grass_bin, attr)
 
 
 @gst.require_grass
@@ -20,14 +22,16 @@ def assert_location_is_current(location: pathlib.Path) -> None:
     assert current_location == location.as_posix()
 
 
-def test_grass_session_contextmanager(grass, tloc):
-    with grass.session(tloc):
-        assert_location_is_current(tloc)
+@param_test_locations
+def test_grass_session_contextmanager(grass_bin, loc):
+    with grass_bin.session(loc):
+        assert_location_is_current(loc)
 
 
-def test_grass_session_decorator(grass, tloc):
-    @grass.session(location=tloc)
+@param_test_locations
+def test_grass_session_decorator(grass_bin, loc):
+    @grass_bin.session(location=loc)
     def inside_grass_session():
-        assert_location_is_current(tloc)
+        assert_location_is_current(loc)
 
     inside_grass_session()

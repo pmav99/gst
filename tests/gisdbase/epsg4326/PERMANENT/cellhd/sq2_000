@@ -1,0 +1,12 @@
+proj:       3
+zone:       0
+north:      2N
+south:      0
+east:       2E
+west:       0
+cols:       2
+rows:       2
+e-w resol:  1
+n-s resol:  1
+format:     0
+compressed: 5
